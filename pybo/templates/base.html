@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!--    Bootstrap CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
+<!--    pybo CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    <title>Hello, pybo!</title>
+</head>
+<body>
+
+<!--기본 템플리셍 삽입할 내용 Start-->
+{% block content %}
+{% endblock %}
+<!--기본 템플릿에 삽입할 내용 End-->
+</body>
+</html>
