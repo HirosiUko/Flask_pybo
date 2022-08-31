@@ -1,1 +1,1 @@
-web: gunicorn run:app
+web: gunicorn "pybo:create_app()" --bind 0.0.0.0:${PORT}
