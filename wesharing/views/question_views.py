@@ -2,9 +2,9 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
 from .. import db
-from pybo.models import Question
+from wesharing.models import Question
 from ..forms import QuestionForm, AnswerForm
-from pybo.views.auth_views import login_required
+from wesharing.views.auth_views import login_required
 
 bp = Blueprint('question', __name__, url_prefix='/question')
 

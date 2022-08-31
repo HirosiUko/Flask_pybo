@@ -3,10 +3,11 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from werkzeug.utils import redirect
 from datetime import datetime
 import functools
+import json
 
-from pybo import db
-from pybo.forms import UserCreateForm, UserLoginForm
-from pybo.models import User
+from wesharing import db
+from wesharing.forms import UserCreateForm, UserLoginForm
+from wesharing.models import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -31,9 +32,40 @@ def signup():
             flash('이미 존재하는 사용자입니다.')
     return render_template('auth/signup.html', form=form)
 
+@bp.route('/api_login/', methods=['POST'])
+def api_login():
+    user = User.query.filter_by(username=request.form['username'].strip()).first()
+    error = None
+    if not user:
+        error = '존재하지 않는 사용자입니다.'
+    elif not check_password_hash(user.password, request.form['password'].strip()):
+        error = "비밀번호가 올바르지 않습니다."
+    if error is None:
+        person_dic = [
+            {
+                "result" : "success"
+        },
+            {
+            "user" : user.username,
+            "email": user.email,
+            "nick" : user.usernick,
+            "create_date" : user.create_date.strftime("%Y/%m/%d, %H:%M:%S"),
+            "userprofile" : user.userprofile,
+            "pic" : "None"
+        }]
+        return json.dumps(person_dic, ensure_ascii=False)
+    return json.dumps([{
+        "result" : "failure"
+    },
+        {
+            "reson": error
+        }], ensure_ascii=False)
+
+
 @bp.route('/login/', methods=('GET', 'POST'))
 def login():
     form = UserLoginForm()
+    print(form.csrf_token)
     if request.method == 'POST' and form.validate_on_submit():
         error = None
         user = User.query.filter_by(username=form.username.data).first()

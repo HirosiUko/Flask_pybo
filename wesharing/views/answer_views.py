@@ -2,8 +2,8 @@ from datetime import datetime
 
 from flask import Blueprint, url_for, request, render_template, g, flash
 from werkzeug.utils import redirect
-from pybo import db
-from pybo.models import Question, Answer
+from wesharing import db
+from wesharing.models import Question, Answer
 from ..forms import AnswerForm
 from .auth_views import login_required
 
