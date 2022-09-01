@@ -13,3 +13,27 @@ def getStoreInfoFromId():
     conn.close()
     print("requested detail store info",store_id)
     return fda_df.to_json(force_ascii=False, orient = 'records')
+
+def getGpsRange(raw, lat, lon, diff):
+    raw_lat, raw_lon = raw.split(',')
+    if (lat-diff <= float(raw_lat) <= lat+diff) and (lon-diff <= float(raw_lon) <= lon+diff):
+        return True
+    return False
+
+@bp.route('/getStoreByGPS', methods=['GET'])
+def getStoreByGPS():
+    if request.method == 'GET':
+        lat = float(request.args['lat'])
+        lon = float(request.args['lon'])
+        distance = int(request.args['dis'])
+        diff = 0.00001 * distance
+
+        print(lat,lon,distance)
+
+        conn = sqlite3.connect('wesharingDB.db')
+        store_df = pd.read_sql_query(f"select * from 'FDA'", conn)
+        conn.close()
+
+        store_filtered = store_df[store_df['GPS'].apply(
+            getGpsRange, args=(lat, lon, diff))]
+        return store_filtered.to_json(force_ascii=False, orient='records')
