@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, flash, request, session, g
+from flask import Blueprint, url_for, render_template, flash, request, session, g, jsonify
 from werkzeug.security import generate_password_hash,check_password_hash
 from werkzeug.utils import redirect
 from datetime import datetime
@@ -34,12 +34,15 @@ def signup():
 
 @bp.route('/api_login/', methods=['POST'])
 def api_login():
+    print("들어오니")
     user = User.query.filter_by(username=request.form['username'].strip()).first()
     error = None
     if not user:
         error = '존재하지 않는 사용자입니다.'
+        print(error)
     elif not check_password_hash(user.password, request.form['password'].strip()):
         error = "비밀번호가 올바르지 않습니다."
+        print(error)
     if error is None:
         person_dic = [
             {
@@ -53,13 +56,13 @@ def api_login():
             "userprofile" : user.userprofile,
             "pic" : "None"
         }]
-        return json.dumps(person_dic, ensure_ascii=False)
-    return json.dumps([{
+        return jsonify(person_dic)
+    return jsonify([{
         "result" : "failure"
     },
         {
             "reson": error
-        }], ensure_ascii=False)
+        }])
 
 
 @bp.route('/login/', methods=('GET', 'POST'))

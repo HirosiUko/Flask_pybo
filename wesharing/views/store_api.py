@@ -1,4 +1,5 @@
-from flask import Blueprint, url_for, request
+from flask import Blueprint, url_for, request,  jsonify
+
 from werkzeug.utils import redirect
 import sqlite3
 import pandas as pd
@@ -12,7 +13,7 @@ def getStoreInfoFromId():
     fda_df = pd.read_sql_query(f"select * from 'tbl_store' where store_id={store_id}", conn)
     conn.close()
     print("requested detail store info",store_id)
-    return fda_df.to_json(force_ascii=False, orient = 'records')
+    return jsonify(fda_df.to_dict(orient='records'))
 
 def getGpsRange(raw, lat, lon, diff):
     raw_lat, raw_lon = raw.split(',')
@@ -36,4 +37,16 @@ def getStoreByGPS():
 
         store_filtered = store_df[store_df['GPS'].apply(
             getGpsRange, args=(lat, lon, diff))]
-        return store_filtered.to_json(force_ascii=False, orient='records')
+        return jsonify(store_filtered.to_dict(orient='records'))
+
+
+@bp.route('/getStoreAll', methods=['GET'])
+def getStoreAll():
+    if request.method == 'GET':
+        print("get All store data info")
+
+        conn = sqlite3.connect('wesharingDB.db')
+        store_df = pd.read_sql_query(f"select * from 'FDA'", conn)
+        conn.close()
+
+        return jsonify(store_df.to_dict(orient='records'))
