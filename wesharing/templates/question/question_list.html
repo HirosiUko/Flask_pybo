@@ -19,7 +19,7 @@
             <td class="text-start">
             <a href="{{url_for('question.detail', question_id=question.id)}}">{{question.subject}}</a>
             {% if question.answer_set|length > 0 %}
-            <span class="text-danger small mx-2">댓글:{{ question.answer_set|length }}</span>
+            <span class="text-danger small mx-2">평가❤️:{{ question.answer_set|length }}</span>
             {% endif %}
             </td>
             <td>{{ question.user.usernick }}</td>  <!-- 글쓴이 추가 -->
