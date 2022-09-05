@@ -50,3 +50,14 @@ def getStoreAll():
         conn.close()
 
         return jsonify(store_df.to_dict(orient='records'))
+
+@bp.route('/getStoreAll2', methods=['GET'])
+def getStoreAll2():
+    if request.method == 'GET':
+        print("get All store data info")
+
+        conn = sqlite3.connect('wesharingDB.db')
+        store_df = pd.read_sql_query(f"select * from 'tbl_store'", conn)
+        conn.close()
+
+        return jsonify(store_df.to_dict(orient='records'))
